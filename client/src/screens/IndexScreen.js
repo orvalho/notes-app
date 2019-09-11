@@ -1,11 +1,19 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet} from 'react-native';
 import {AntDesign} from '@expo/vector-icons';
 
 import {Context} from '../context/NotesContext';
 
 const IndexScreen = ({navigation}) => {
-    const {state: notes, deleteNote} = useContext(Context);
+    const {state: notes, deleteNote, getNotes} = useContext(Context);
+
+    useEffect(() => {
+        getNotes();
+        const listener = navigation.addListener('didFocus', getNotes);
+        return () => {
+            listener.remove();
+        };
+    }, []);
 
     // in case there are no notes
     if (!notes.length) {
